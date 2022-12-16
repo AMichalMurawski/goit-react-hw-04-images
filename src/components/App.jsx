@@ -7,7 +7,7 @@ import { Modal } from './Modal/Modal';
 import { Searchbar } from './Searchbar/Searchbar';
 import { getImagesFromPixabay } from './services/api';
 
-const IMAGES_PER_PAGE = 100;
+const IMAGES_PER_PAGE = 12;
 const INITIAL_STATE = {
   searchText: '',
   totalHits: 0,
