@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import css from './Button.module.css';
 
 export class Button extends Component {
@@ -20,5 +20,5 @@ export class Button extends Component {
 
 Button.propTypes = {
   pageNr: PropTypes.number.isRequired,
-  onClick: PropTypes.func.isRequired
-}
+  onClick: PropTypes.func.isRequired,
+};

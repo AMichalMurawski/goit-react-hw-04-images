@@ -24,7 +24,7 @@ export class App extends Component {
   };
 
   searchImages = async (searchText, pageNr, imagesPerPage) => {
-    this.setState({isLoading:true})
+    this.setState({ isLoading: true });
     const response = await getImagesFromPixabay(
       searchText,
       pageNr,
@@ -41,15 +41,15 @@ export class App extends Component {
         });
       });
 
-      const prevImages = this.state.images
+      const prevImages = this.state.images;
       prevImages.forEach(prevImage => {
         images.forEach((image, index, array) => {
           if (prevImage.id === image.id) {
-            console.log(image.id, index)
-            array.splice(index,1)
+            console.log(image.id, index);
+            array.splice(index, 1);
           }
-        })
-      })
+        });
+      });
 
       const maxPages = Math.ceil(response.totalHits / IMAGES_PER_PAGE);
 
@@ -72,22 +72,30 @@ export class App extends Component {
     }
   };
 
-  modalOpen = (src) => {
-    this.setState({srcLarge: src})
-  }
+  modalOpen = src => {
+    this.setState({ srcLarge: src });
+  };
 
   modalClose = () => {
-    this.setState({srcLarge: ''})
-  }
-
+    this.setState({ srcLarge: '' });
+  };
 
   render() {
-    const { searchText, images, pageNr, maxPages, totalHits, isLoading, srcLarge } = this.state;
+    const {
+      searchText,
+      images,
+      pageNr,
+      maxPages,
+      totalHits,
+      isLoading,
+      srcLarge,
+    } = this.state;
 
     return (
       <div
         style={{
           display: 'flex',
+          width: '100%',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
@@ -116,10 +124,13 @@ export class App extends Component {
           <Button
             pageNr={pageNr}
             onClick={nextPage =>
-              this.searchImages(searchText, nextPage, IMAGES_PER_PAGE)}
+              this.searchImages(searchText, nextPage, IMAGES_PER_PAGE)
+            }
           />
         )}
-        {srcLarge.length > 0 && (<Modal src={srcLarge} modalClose={this.modalClose} />)}
+        {srcLarge.length > 0 && (
+          <Modal src={srcLarge} modalClose={this.modalClose} />
+        )}
       </div>
     );
   }

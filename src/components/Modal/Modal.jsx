@@ -1,20 +1,19 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import css from './Modal.module.css';
 
-const ESCAPE_KEY = 27
+const ESCAPE_KEY = 27;
 
 export class Modal extends Component {
-
   componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyDown)
+    document.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentDidUpdate() {
-    document.addEventListener("keydown", this.handleKeyDown)
+    document.addEventListener('keydown', this.handleKeyDown);
   }
 
-  handleKeyDown = (e) => {
+  handleKeyDown = e => {
     switch (e.keyCode) {
       case ESCAPE_KEY:
         this.props.modalClose();
@@ -22,13 +21,13 @@ export class Modal extends Component {
       default:
         break;
     }
-  }
+  };
 
-  escapeClick = (e) => {
-    if (e.target.tagName.toLowerCase() !== "img") {
+  escapeClick = e => {
+    if (e.target.tagName.toLowerCase() !== 'img') {
       this.props.modalClose();
     }
-  }
+  };
 
   render() {
     const { src } = this.props;
@@ -44,6 +43,6 @@ export class Modal extends Component {
 }
 
 Modal.propTypes = {
-  src:PropTypes.string.isRequired,
-  modalClose:PropTypes.func.isRequired
-}
+  src: PropTypes.string.isRequired,
+  modalClose: PropTypes.func.isRequired,
+};
