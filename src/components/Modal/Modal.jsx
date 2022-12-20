@@ -1,45 +1,39 @@
-import { Component } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import css from './Modal.module.css';
 
 const ESCAPE_KEY = 27;
 
-export class Modal extends Component {
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
-  }
+export function Modal({ src, ...props }) {
+  
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => { document.removeEventListener('keydown', handleKeyDown) }
+  })
 
-  componentDidUpdate() {
-    document.addEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleKeyDown = e => {
+  function handleKeyDown(e) {
     switch (e.keyCode) {
       case ESCAPE_KEY:
-        this.props.modalClose();
+        props.modalClose();
         break;
       default:
         break;
     }
   };
 
-  escapeClick = e => {
+  function escapeClick(e) {
     if (e.target.tagName.toLowerCase() !== 'img') {
-      this.props.modalClose();
+      props.modalClose();
     }
   };
 
-  render() {
-    const { src } = this.props;
-
     return (
-      <div className={css.overlay} onClick={this.escapeClick}>
+      <div className={css.overlay} onClick={escapeClick}>
         <div className={css.modal}>
           <img className={css.image} src={src} alt="" />
         </div>
       </div>
     );
-  }
 }
 
 Modal.propTypes = {

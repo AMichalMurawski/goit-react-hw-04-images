@@ -1,8 +1,7 @@
-import { Component } from 'react';
+import React from 'react';
 import { Blocks } from 'react-loader-spinner';
 
-export class Loader extends Component {
-  render() {
+export function Loader() {
     return (
       <Blocks
         visible={true}
@@ -13,5 +12,4 @@ export class Loader extends Component {
         wrapperClass="blocks-wrapper"
       />
     );
-  }
 }
