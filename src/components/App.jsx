@@ -1,30 +1,23 @@
 import React, { useState } from 'react';
 import { Button } from './Button/Button';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { Loader } from './Loader/Loader';
 import { Modal } from './Modal/Modal';
 import { Searchbar } from './Searchbar/Searchbar';
-import { getImagesFromPixabay } from './services/api';
-
-const IMAGES_PER_PAGE = 12;
+import { getImagesFromPixabay } from '../services/api';
 
 export function App() {
-  const [searchText, setSearchText] = useState('')
-  const [totalHits, setTotalHits] = useState(0)
-  const [pageNr, setPageNr] = useState(1)
-  const [maxPages, setMaxPages] = useState(1)
-  const [images, setImages] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [srcLarge, setSrcLarge] = useState('')
+  const [searchText, setSearchText] = useState('');
+  const [totalHits, setTotalHits] = useState(0);
+  const [page, setPage] = useState(1);
+  const [maxPages, setMaxPages] = useState(1);
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [srcLarge, setSrcLarge] = useState('');
 
-  async function searchImages (searchText, pageNr, imagesPerPage) {
+  async function searchImages(searchText, page) {
     setIsLoading(true);
-    const response = await getImagesFromPixabay(
-      searchText,
-      pageNr,
-      imagesPerPage
-    );
+    const response = await getImagesFromPixabay(searchText, page);
 
     if (response.totalHits > 0) {
       let newImages = [];
@@ -36,8 +29,8 @@ export function App() {
         });
       });
 
-      if (pageNr === 1) { 
-        setImages([...newImages])
+      if (page === 1) {
+        setImages([...newImages]);
       } else {
         images.forEach(image => {
           newImages.forEach((newImage, index, array) => {
@@ -47,73 +40,56 @@ export function App() {
             }
           });
         });
-        setImages([...images, ...newImages])
+        setImages([...images, ...newImages]);
       }
 
-      const maxPages = Math.ceil(response.totalHits / IMAGES_PER_PAGE);
+      const maxPages = Math.ceil(response.totalHits / response.hits.length);
 
       setSearchText(searchText);
       setTotalHits(response.totalHits);
-      setPageNr(pageNr);
+      setPage(page);
       setMaxPages(maxPages);
       setIsLoading(false);
     } else {
-      resetState()
+      resetState();
     }
-    setIsLoading(false)
-  };
+    setIsLoading(false);
+  }
 
   function resetState() {
     setSearchText('');
     setTotalHits(0);
-    setPageNr(1);
+    setPage(1);
     setMaxPages(1);
     setImages([]);
     setIsLoading(false);
     setSrcLarge('');
   }
 
-    return (
-      <div
-        style={{
-          display: 'flex',
-          width: '100%',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: 40,
-          color: '#010101',
-        }}
-      >
-        <Searchbar
-          searchImages={text => searchImages(text, 1, IMAGES_PER_PAGE)}
+  return (
+    <div
+      style={{
+        display: 'flex',
+        width: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 40,
+        color: '#010101',
+      }}
+    >
+      <Searchbar searchImages={text => searchImages(text, 1)} />
+      <ImageGallery images={images} modalOpen={src => setSrcLarge(src)} />
+      {isLoading === true && <Loader />}
+      {totalHits > 0 && page < maxPages && (
+        <Button
+          page={page}
+          onClick={nextPage => searchImages(searchText, nextPage)}
         />
-        <ImageGallery>
-          {images.map(image => {
-            return (
-              <ImageGalleryItem
-                key={image.id}
-                srcWeb={image.webformatURL}
-                srcLarge={image.largeImageURL}
-                alt={image.largeImageURL}
-                modalOpen={src => setSrcLarge(src)}
-              />
-            );
-          })}
-        </ImageGallery>
-        {isLoading === true && <Loader />}
-        {totalHits > 0 && pageNr < maxPages && (
-          <Button
-            pageNr={pageNr}
-            onClick={nextPage =>
-              searchImages(searchText, nextPage, IMAGES_PER_PAGE)
-            }
-          />
-        )}
-        {srcLarge.length > 0 && (
-          <Modal src={srcLarge} modalClose={() => setSrcLarge('')} />
-        )}
-      </div>
-    );
-  }
-
+      )}
+      {srcLarge.length > 0 && (
+        <Modal src={srcLarge} modalClose={() => setSrcLarge('')} />
+      )}
+    </div>
+  );
+}
